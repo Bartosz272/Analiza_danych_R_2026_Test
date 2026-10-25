@@ -154,6 +154,14 @@ summary(nier)
 colSums(is.na(nier))
 anyDuplicated(nier$id)
 
+##Odpowiedzi do Zadania 1:**
+## Liczba rekordów i kolumn:** Zbiór liczy 414 wierszy oraz 7 kolumn.
+## Typy danych i statystyki:** Wszystkie zmienne są typu numerycznego (`int` / `num`).
+##Braki danych: Funkcja `colSums(is.na(nier))` wykazała brak jakichkolwiek braków danych (wartości 0 we wszystkich kolumnach).
+## Unikatowość `id`:** Wynik funkcji `anyDuplicated(nier$id)` wynosi 0, co potwierdza, że identyfikatory są w pełni unikatowe.
+## Zmienne, których nie powinno się interpretować jako zwykłych miar ilościowych:**
+ # 1. `id` – jest wyłącznie technicznym identyfikatorem porządkowym.
+ # 2. `lat` oraz `lon` – to współrzędne geograficzne wskazujące położenie punktu w przestrzeni, a nie miara ilościowa natężenia cechy.
 ```
 
 ### Zadanie 2 — przelicz cenę i sprawdź jej rozkład
