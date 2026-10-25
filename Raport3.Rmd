@@ -147,7 +147,12 @@ Sprawdź liczbę rekordów i kolumn, typy danych, liczbę braków oraz podstawow
 
 ```{r nier-zad-1}
 # WASZE ROZWIĄZANIE
-# dim(), str(), summary(), colSums(is.na(...)), anyDuplicated()
+#dim(), str(), summary(), colSums(is.na(...)), anyDuplicated()
+dim(nier)
+str(nier)
+summary(nier)
+colSums(is.na(nier))
+anyDuplicated(nier$id)
 
 ```
 
@@ -248,7 +253,10 @@ Następnie policz udział odpowiedzi „W dobrym” **tylko wśród osób, któr
 
 ```{r cbos-zad-6}
 # WASZE ROZWIĄZANIE
-# count(kierunek), filter(kierunek %in% c("W dobrym", "W złym"))
+# 
+
+
+count(kierunek), filter(kierunek %in% c("W dobrym", "W złym"))
 
 ```
 
