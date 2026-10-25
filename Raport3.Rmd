@@ -147,8 +147,21 @@ Sprawdź liczbę rekordów i kolumn, typy danych, liczbę braków oraz podstawow
 
 ```{r nier-zad-1}
 # WASZE ROZWIĄZANIE
-# dim(), str(), summary(), colSums(is.na(...)), anyDuplicated()
+#dim(), str(), summary(), colSums(is.na(...)), anyDuplicated()
+dim(nier)
+str(nier)
+summary(nier)
+colSums(is.na(nier))
+anyDuplicated(nier$id)
 
+##Odpowiedzi do Zadania 1:**
+## Liczba rekordów i kolumn:** Zbiór liczy 414 wierszy oraz 7 kolumn.
+## Typy danych i statystyki:** Wszystkie zmienne są typu numerycznego (`int` / `num`).
+##Braki danych: Funkcja `colSums(is.na(nier))` wykazała brak jakichkolwiek braków danych (wartości 0 we wszystkich kolumnach).
+## Unikatowość `id`:** Wynik funkcji `anyDuplicated(nier$id)` wynosi 0, co potwierdza, że identyfikatory są w pełni unikatowe.
+## Zmienne, których nie powinno się interpretować jako zwykłych miar ilościowych:**
+ # 1. `id` – jest wyłącznie technicznym identyfikatorem porządkowym.
+ # 2. `lat` oraz `lon` – to współrzędne geograficzne wskazujące położenie punktu w przestrzeni, a nie miara ilościowa natężenia cechy.
 ```
 
 ### Zadanie 2 — przelicz cenę i sprawdź jej rozkład
@@ -160,6 +173,28 @@ Pytanie: czy średnia jest wyższa od mediany? Co to mówi o rozkładzie cen? Ni
 ```{r nier-zad-2}
 # WASZE ROZWIĄZANIE
 # mutate(), summarise(), arrange(desc(...)), slice_head(n = 5)
+
+
+library(dplyr)
+nier <- nier %>%
+  mutate(cena_twd_m2 = cena_10k_twd_ping * 10000 / 3.3)
+
+nier %>%
+  summarise(
+    minimum = min(cena_twd_m2),
+    mediana = median(cena_twd_m2),
+    srednia = mean(cena_twd_m2),
+    maksimum = max(cena_twd_m2)
+  )
+
+nier %>%
+  arrange(desc(cena_twd_m2)) %>%
+  select(id, cena_twd_m2, wiek_lat, metro_m, sklepy) %>%
+  slice_head(n = 5)
+
+# Obliczona średnia cena za m² jest wyższa od mediany.
+# Mediana pokazuje typową stawkę dla przeciętnego mieszkania (połowa lokali na rynku jest tańsza, a połowa droższa). Z kolei średnia jest zawyżona, ponieważ w bazie trafiło się kilka bardzo drogich, luksusowych apartamentów. Te pojedyncze drogie nieruchomości „ciągną” całą średnią mocno w górę
+
 
 ```
 
@@ -248,7 +283,10 @@ Następnie policz udział odpowiedzi „W dobrym” **tylko wśród osób, któr
 
 ```{r cbos-zad-6}
 # WASZE ROZWIĄZANIE
-# count(kierunek), filter(kierunek %in% c("W dobrym", "W złym"))
+# 
+
+
+count(kierunek), filter(kierunek %in% c("W dobrym", "W złym"))
 
 ```
 

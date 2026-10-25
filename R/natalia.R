@@ -1,0 +1,5 @@
+dim(nier)
+str(nier)
+summary(nier)
+colSums(is.na(nier))
+anyDuplicated(nier$id)
