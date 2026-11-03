@@ -209,6 +209,22 @@ Wynik opisz jednym zdaniem z liczbami i jednostkami. To proste porównanie opiso
 # Wskazówka: mutate(blisko_metra = metro_m <= 500)
 # group_by(blisko_metra) %>% summarise(liczba = n(), mediana = median(...))
 
+
+library(dplyr)
+
+
+nier <- nier %>% mutate(blisko_metro = metro_m <= 500)
+
+nier %>%
+  group_by(blisko_metro) %>%
+  summarise(
+    liczba = n(),
+    odsetek = n() / nrow(nier) * 100,
+    mediana = median(cena_twd_m2)
+  )
+
+## Do 500 m od metra (TRUE) jest 211 mieszkań (51%), a mediana ich ceny wynosi 135 758 TWD/m² wobec 85 152 TWD/m² dla lokali położonych dale (FALSE)
+
 ```
 
 ### Zadanie 4 — wiek, odległość i sklepy
@@ -228,6 +244,36 @@ nier <- nier %>% mutate(
 ```{r nier-zad-4}
 # WASZE ROZWIĄZANIE
 # group_by(strefa), summarise(), filter(wiek_lat <= 20)
+
+library(dplyr)
+
+nier <- nier %>% mutate(
+  strefa = cut(metro_m, c(-Inf, 500, 1500, Inf),
+               labels = c("do 500 m", "500-1500 m", "ponad 1500 m"))
+)
+
+# 1. Wszystkie budynki w podziale na strefy
+nier %>%
+  group_by(strefa) %>%
+  summarise(
+    liczba = n(),
+    mediana_ceny = round(median(cena_twd_m2), 1),
+    mediana_wieku = round(median(wiek_lat), 1),
+    srednia_sklepow = round(mean(sklepy), 2)
+  )
+
+# 2. Tylko budynki w wieku do 20 lat w podziale na strefy
+nier %>%
+  filter(wiek_lat <= 20) %>%
+  group_by(strefa) %>%
+  summarise(
+    liczba = n(),
+    mediana_ceny = round(median(cena_twd_m2), 1),
+    mediana_wieku = round(median(wiek_lat), 1),
+    srednia_sklepow = round(mean(sklepy), 2)
+  )
+
+
 
 ```
 
@@ -273,6 +319,28 @@ Sprawdź liczbę obserwacji i braków. Przygotuj tabelę liczności i odsetków 
 # WASZE ROZWIĄZANIE
 # count(), mutate(procent = 100 * n / sum(n)), filter(!is.na(...))
 
+library(dplyr)
+
+# 1. Sprawdzenie liczby obserwacji oraz braków danych (NA) w badanych zmiennych
+cbos %>%
+  summarise(
+    liczba_wierszy = n(),
+    braki_plec = sum(is.na(plec)),
+    braki_miejscowosc = sum(is.na(miejscowosc))
+  )
+
+# 2. Tabela liczności i odsetków dla zmiennej 'plec' (bez braków danych)
+cbos %>%
+  filter(!is.na(plec)) %>%
+  count(plec) %>%
+  mutate(odsetek = round(n / sum(n) * 100, 2))
+
+# 3. Tabela liczności i odsetków dla zmiennej 'miejscowosc' (bez braków danych)
+cbos %>%
+  filter(!is.na(miejscowosc)) %>%
+  count(miejscowosc) %>%
+  mutate(odsetek = round(n / sum(n) * 100, 2))
+
 ```
 
 ### Zadanie 6 — jak oceniano kierunek zmian w kraju?
@@ -284,9 +352,23 @@ Następnie policz udział odpowiedzi „W dobrym” **tylko wśród osób, któr
 ```{r cbos-zad-6}
 # WASZE ROZWIĄZANIE
 # 
+library(dplyr)
 
+# 1. Liczebności i odsetki odpowiedzi w całej próbie (z 'Trudno powiedzieć' i odmowami)
+tabela_ogolna <- cbos %>%
+  filter(!is.na(kierunek)) %>%
+  count(kierunek) %>%
+  mutate(odsetek_ogolny = round(n / sum(n) * 100, 2))
 
-count(kierunek), filter(kierunek %in% c("W dobrym", "W złym"))
+tabela_ogolna
+
+# 2. Udział odpowiedzi "W dobrym" TYLKO wśród osób, które wybrały "W dobrym" albo "W złym"
+tabela_zdecydowani <- cbos %>%
+  filter(kierunek %in% c("W dobrym", "W złym")) %>%
+  count(kierunek) %>%
+  mutate(odsetek_zdecydowani = round(n / sum(n) * 100, 2))
+
+tabela_zdecydowani
 
 ```
 
